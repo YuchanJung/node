@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "node.js guide",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuchanJung/node.git"
+  },
+  "author": "Yuchan Jung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YuchanJung/node/issues"
+  },
+  "homepage": "https://github.com/YuchanJung/node#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
