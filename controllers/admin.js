@@ -1,4 +1,23 @@
+const fs = require("fs");
+const path = require("path");
+
 const Product = require("../models/product");
+
+const filePath = path.join(
+  path.dirname(require.main.filename),
+  "data",
+  "products.json"
+);
+
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll((products) => {
+    res.render("admin/products", {
+      prods: products,
+      pageTitle: "Admin Products",
+      path: "/admin/products",
+    });
+  });
+};
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
@@ -49,12 +68,8 @@ exports.postEditProduct = (req, res, next) => {
   res.redirect("/admin/products");
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("admin/products", {
-      prods: products,
-      pageTitle: "Admin Products",
-      path: "/admin/products",
-    });
-  });
+exports.postDeleteProduct = (req, res, next) => {
+  const { productId } = req.body;
+  Product.deleteById(productId);
+  res.redirect("/admin/products");
 };
