@@ -36,6 +36,7 @@ module.exports = class Cart {
       if (err) return;
       let { products, totalPrice } = JSON.parse(fileContent);
       const targetProduct = products.find((value) => value.id === id);
+      if (!targetProduct) return;
       products = products.filter((product) => product.id !== id);
       totalPrice -= targetProduct.quantity * productPrice;
       // need to handle error of totalPrice accuracy
