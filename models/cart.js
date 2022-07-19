@@ -31,7 +31,7 @@ module.exports = class Cart {
     });
   }
 
-  static deleteById(id, productPrice) {
+  static deleteProduct(id, productPrice) {
     fs.readFile(filePath, (err, fileContent) => {
       if (err) return;
       let { products, totalPrice } = JSON.parse(fileContent);
