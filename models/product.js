@@ -28,6 +28,10 @@ module.exports = class Product {
   }
 
   save() {
+    return database.execute(
+      "INSERT INTO products (title, price, description, imageUrl) VALUE (?, ?, ?, ?)",
+      [this.title, this.price, this.description, this.imageUrl]
+    );
     // getProductsFromFile((products) => {
     //   if (this.id) {
     //     // edit product
