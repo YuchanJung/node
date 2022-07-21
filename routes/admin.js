@@ -26,4 +26,4 @@ router.post("/edit-product", postEditProduct);
 
 router.post("/delete-product", postDeleteProduct);
 
-exports.routes = router;
+module.exports = router;
