@@ -3,11 +3,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const database = require("./util/database");
-
 const app = express();
-
-database.execute("SELECT * FROM products");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
