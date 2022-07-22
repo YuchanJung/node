@@ -53,11 +53,14 @@ module.exports = class Product {
     // });
   }
 
-  static fetchAll(callback) {
+  static fetchAll() {
     return database.execute("SELECT * FROM products");
   }
 
-  static findById(id, callback) {
+  static findById(id) {
+    return database.execute("SELECT * FROM products WHERE products.id = ?", [
+      id,
+    ]);
     // getProductsFromFile((products) => {
     //   const proudct = products.find((value) => value.id === id);
     //   callback(proudct);
