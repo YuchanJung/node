@@ -15,10 +15,21 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findById(productId)
-    .then(([product]) => {
+  // Product.findAll({ where: { id: productId } })
+  //   .then((products) => {
+  //     console.log(products[0]);
+  //     res.render("shop/product-detail", {
+  //       product: products[0],
+  //       pageTitle: products[0].title,
+  //       path: "",
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+  Product.findByPk(productId)
+    .then((product) => {
+      console.log(product);
       res.render("shop/product-detail", {
-        product: product[0], // product : product
+        product,
         pageTitle: product.title,
         path: "",
       });
