@@ -58,9 +58,10 @@ sequelize
     }
     return user; // Promise.resolve(user)
   })
-  .then((user) => {
-    // console.log(user);
-    return user.createCart();
+  .then(async (user) => {
+    const cart = await Cart.findAll({ where: { userId: 1 } });
+    if (!cart) return user.createCart();
+    return cart;
   })
   .then((cart) => {
     app.listen(3000);
