@@ -68,7 +68,7 @@ sequelize
   })
   .then(async (user) => {
     const cart = await Cart.findAll({ where: { userId: 1 } });
-    if (!cart) return user.createCart();
+    if (cart.length === 0) return user.createCart(); // if (!cart) -> error
     return cart;
   })
   .then((cart) => {
