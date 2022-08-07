@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-// const User = require("./models/user");
+const User = require("./models/user");
 
 const app = express();
 const uri =
@@ -20,16 +20,15 @@ const { get404 } = require("./controllers/error");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use((req, res, next) => {
-//   User.findById("62e8ac82a234c4f21644c206")
-//     .then((user) => {
-//       const { name, email, cart, _id } = user;
-//       console.log("user(id : 62e8ac82a234c4f21644c206) connected!");
-//       req.user = new User(name, email, cart, _id);
-//       next();
-//     })
-//     .catch((err) => console.log(err));
-// });
+app.use((req, res, next) => {
+  User.findById("62ee12223c1cc4fdd589b54f")
+    .then((user) => {
+      console.log("user(id : 62ee12223c1cc4fdd589b54f) connected!");
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -39,6 +38,15 @@ app.use(get404);
 mongoose
   .connect(uri)
   .then((result) => {
+    User.findOne().then((user) => {
+      if (user) return;
+      const newUser = new User({
+        name: "root",
+        email: "root@test.com",
+        items: [],
+      });
+      newUser.save();
+    });
     app.listen(3000);
   })
   .catch((err) => {

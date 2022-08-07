@@ -2,7 +2,10 @@ const Product = require("../models/product");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // .select("title price -_id")
+    // .populate("userId")
     .then((products) => {
+      // console.log(products);
       res.render("admin/products", {
         products,
         pageTitle: "Admin Products",
@@ -22,7 +25,13 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
-  const product = new Product({ title, price, imageUrl, description });
+  const product = new Product({
+    title,
+    price,
+    imageUrl,
+    description,
+    userId: req.user._id, // req.user
+  });
   product
     .save()
     .then((result) => {
