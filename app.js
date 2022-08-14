@@ -3,12 +3,19 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 const User = require("./models/user");
 
-const app = express();
-const uri =
+const MONGODB_URI =
   "mongodb+srv://root:root@cluster0.chtnfx7.mongodb.net/shop?retryWrites=true&w=majority";
+
+const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -20,11 +27,23 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "my secert",
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
+);
 
 app.use((req, res, next) => {
-  User.findById("62f0f861d11bbd169823c43d")
+  if (!req.session.user) {
+    console.log("no user");
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then((user) => {
-      console.log("user(id : 62f0f861d11bbd169823c43d) connected!");
+      console.log(`user(id : ${user._id}) connected!`);
       req.user = user;
       next();
     })
@@ -38,7 +57,7 @@ app.use(authRoutes);
 app.use(get404);
 
 mongoose
-  .connect(uri)
+  .connect(MONGODB_URI)
   .then((result) => {
     User.findOne().then((user) => {
       if (user) return;

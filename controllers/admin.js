@@ -10,6 +10,7 @@ exports.getProducts = (req, res, next) => {
         products,
         pageTitle: "Admin Products",
         path: "/admin/products",
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -20,6 +21,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add Prdocut",
     path: "/admin/add-product",
     editMode: false,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -53,6 +55,7 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editMode: JSON.parse(editMode), // string to boolean
         product,
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
