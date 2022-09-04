@@ -39,6 +39,7 @@ exports.getSignup = (req, res, next) => {
     pageTitle: "Signup",
     errorMessage,
     oldInput: false,
+    validationErrors: [],
   });
 };
 
@@ -83,6 +84,7 @@ exports.postSignup = (req, res, next) => {
       pageTitle: "Signup",
       errorMessage: errors.array()[0].msg,
       oldInput: { email, password },
+      validationErrors: errors.array(),
     });
   }
   bcrypt
