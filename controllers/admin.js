@@ -1,3 +1,5 @@
+const { validationResult } = require("express-validator");
+
 const Product = require("../models/product");
 
 exports.getProducts = (req, res, next) => {
@@ -20,6 +22,9 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add Prdocut",
     path: "/admin/add-product",
     editMode: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -32,6 +37,21 @@ exports.postAddProduct = (req, res, next) => {
     description,
     userId: req.user._id, // req.user
   });
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Prdocut",
+      path: "/admin/add-product",
+      editMode: false,
+      product,
+      hasError: true,
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
+
   product
     .save()
     .then((result) => {
@@ -45,6 +65,7 @@ exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) return res.redirect("/");
   const productId = req.params.productId;
+
   Product.findById(productId)
     .then((product) => {
       if (!product) return res.redirect("/");
@@ -53,6 +74,8 @@ exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editMode: JSON.parse(editMode), // string to boolean
         product,
+        errorMessage: null,
+        validationErrors: [],
       });
     })
     .catch((err) => console.log(err));
@@ -60,6 +83,20 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { productId, title, price, imageUrl, description } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Prdocut",
+      path: "/admin/edit-product",
+      editMode: true,
+      product: { _id: productId, title, price, imageUrl, description },
+      hasError: true,
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
+
   Product.findById(productId)
     .then((product) => {
       if (product.userId.toString() != req.user._id.toString()) {
