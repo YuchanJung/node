@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const { validationResult } = require("express-validator");
 
 const Product = require("../models/product");
@@ -14,7 +16,11 @@ exports.getProducts = (req, res, next) => {
         path: "/admin/products",
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode(500);
+      return next(error);
+    });
 };
 
 exports.getAddProduct = (req, res, next) => {
@@ -31,6 +37,7 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, price, imageUrl, description } = req.body;
   const product = new Product({
+    _id: mongoose.Types.ObjectId("630f0aacc3218850f5662b42"),
     title,
     price,
     imageUrl,
@@ -58,7 +65,11 @@ exports.postAddProduct = (req, res, next) => {
       // console.log(result);
       res.redirect("/");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode(500);
+      return next(error);
+    });
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -78,7 +89,11 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode(500);
+      return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -112,7 +127,11 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect("/admin/products");
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode(500);
+      return next(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -122,5 +141,9 @@ exports.postDeleteProduct = (req, res, next) => {
       console.log("DESTROYED PRDOUCTS!");
       res.redirect("/admin/products");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode(500);
+      return next(error);
+    });
 };
