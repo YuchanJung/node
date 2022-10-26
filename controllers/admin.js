@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { deleteFile } = require("../util/file");
 
 const { validationResult } = require("express-validator");
 
@@ -136,6 +137,7 @@ exports.postEditProduct = (req, res, next) => {
       product.title = title;
       product.price = price;
       if (image) {
+        deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
       product.description = description;
@@ -153,7 +155,14 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const { productId } = req.body;
-  Product.deleteOne({ _id: productId, userId: req.user._id })
+  Product.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product not found."));
+      }
+      deleteFile(product.imageUrl);
+      return Product.deleteOne({ _id: productId, userId: req.user._id });
+    })
     .then(() => {
       console.log("DESTROYED PRDOUCTS!");
       res.redirect("/admin/products");
